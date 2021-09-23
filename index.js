@@ -29,7 +29,7 @@ app.post('/post',(req,res)=>{
 
 
 });
-
+//crud opertaion for updating the data in database
 app.post('/update',async(req,res)=>{
     const filter = { name: req.body.name };
     const update = { img:req.body.img,Summary:req.body.Summary };
@@ -45,12 +45,37 @@ app.post('/update',async(req,res)=>{
 
 // getting data from the database'
 
-app.get('/get',(req,res)=>{
+app.get('/get',async (req,res)=>{
+    let val;
+    const [data,err]=await Mode.find({name:req.body.name});
+    if(data)
+    {
+        val=data;
+        console.log(data);
+    }
+    else{
+        console.log(err,'error in fetching data from db');
+
+    }
+    res.send(val);
     
 
 });
 
+//crud operation for deleting the vaur using id of database
 
+app.get('/delete/:id',function(req,res){
+    let id=req.params.id;
+    Mode.findByIdAndDelete(id,function(err)
+    {
+        if(err)
+        {
+            console.log("error in deleting the data",err);
+            return;
+        }
+        return res.send("succesfully deleted");
+    })
+})
 
 
 
