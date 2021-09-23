@@ -3,7 +3,8 @@ const mongoose=require('mongoose');
 const askedShema=new mongoose.Schema({
     name:{
         type:String,
-        required:true
+        required:true,
+
     },
     img:{
         type:String,
