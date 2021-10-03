@@ -2,7 +2,7 @@ require('dotenv').config();
 const express=require('express');
 const db=require('./db');
 const Mode=require('./models');
-
+const {logger}=require('./logger');
 const app=express();
 const port=process.env.PORT;
 app.use(express.json());
@@ -30,7 +30,7 @@ app.get('/',(req,res)=>{
 
 //
 //for storing the data into databse
-app.post('/put_user_detail',async(req,res)=>{
+app.post('/put_user_detail',(req,res)=>{
     // Mode.uploadedimage(req,res,function(err)
     // {
     //         if(err){
@@ -39,16 +39,15 @@ app.post('/put_user_detail',async(req,res)=>{
     //         console.log(req.file);
     // });
     try{
-        let data=await new Mode({
+        let data= new Mode({
             name:req.body.name,
             img:req.body.name,
-            // uploadedimage
-            
             Summary:req.body.Summary
             
         });
         data.save();
-        console.log(data);
+        // console.log(data);
+        logger.info('data succesfully sent');
         // res.end("data succesulfy sent");
         res.status(200).send(JSON.stringify("data succesfully have been set into db"));
     }
@@ -70,7 +69,8 @@ app.post('/update_detail',async(req,res)=>{
         
     
         let doc = await Mode.findOneAndUpdate(filter, update);
-        console.log("succesfully updated the value");
+        // console.log("succesfully updated the value");
+        logger.info("succesfully updated the value")
 
         res.status(200).send("succesfully updates ur value");
     }
@@ -96,7 +96,8 @@ app.get('/get_user_data',async (req,res)=>{
             console.log(data);
         }
         else{
-            console.log(err,'error in fetching data from db');
+            // console.log(err,'error in fetching data from db');
+            logger.error('error in fetching data from db');
 
         }
         res.status(200).send(val);
@@ -120,7 +121,8 @@ app.get('/delete_data/:id',function(req,res){
         {
             if(err)
             {
-                console.log("error in deleting the data",err);
+                // console.log("error in deleting the data",err);
+                looger.info('error in deleting the data');
                 return res.status(401).send("error in deleting the value in db");
             }
             return res.status(200).send("succesfully deleted");
