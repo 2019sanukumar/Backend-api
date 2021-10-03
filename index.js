@@ -1,9 +1,10 @@
+require('dotenv').config();
 const express=require('express');
 const db=require('./db');
 const Mode=require('./models');
 
 const app=express();
-const port=process.env.port||8080;
+const port=process.env.PORT;
 app.use(express.json());
 
 
@@ -20,7 +21,7 @@ app.get('/',(req,res)=>{
 // try and cactch
 
 
-
+// console.log(process.env.PORT)
 
 
 
@@ -141,5 +142,5 @@ app.get('/delete_data/:id',function(req,res){
 
 app.listen(port,function()
 {
-    console.log('sever is runing on port,8080');
+    console.log('sever is runing on port',process.env.PORT);
 })
