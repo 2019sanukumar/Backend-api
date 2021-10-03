@@ -13,74 +13,124 @@ app.get('/',(req,res)=>{
 
 });
 
+// 
+// put proper detail in route
+// return properly with 
+// validate input
+// try and cactch
 
+
+
+
+
+
+
+
+
+//
 //for storing the data into databse
-app.post('/post',(req,res)=>{
-    let data=new Mode({
-        name:req.body.name,
-        img:req.body.name,
-        Summary:req.body.Summary
+app.post('/put_user_detail',async(req,res)=>{
+    // Mode.uploadedimage(req,res,function(err)
+    // {
+    //         if(err){
+    //             console.log("multer errir",err);
+    //         }
+    //         console.log(req.file);
+    // });
+    try{
+        let data=await new Mode({
+            name:req.body.name,
+            img:req.body.name,
+            // uploadedimage
+            
+            Summary:req.body.Summary
+            
+        });
+        data.save();
+        console.log(data);
+        // res.end("data succesulfy sent");
+        res.status(200).send(JSON.stringify("data succesfully have been set into db"));
+    }
+    catch(err)
+    {
+        err.message="error in puttig detail of user";
+        throw err;
         
-    });
-    data.save();
-    console.log(data);
-    res.end("data succesulfy sent");
+    }
     
 
 
 });
 //crud opertaion for updating the data in database
-app.post('/update',async(req,res)=>{
-    const filter = { name: req.body.name };
-    const update = { img:req.body.img,Summary:req.body.Summary };
+app.post('/update_detail',async(req,res)=>{
+    try{
+        const filter = { name: req.body.name };
+        const update = { img:req.body.img,Summary:req.body.Summary };
+        
     
-   
-    let doc = await Mode.findOneAndUpdate(filter, update);
-    console.log("succesfully updated the value");
+        let doc = await Mode.findOneAndUpdate(filter, update);
+        console.log("succesfully updated the value");
 
-    res.send("succesfully updates ur value");
+        res.status(200).send("succesfully updates ur value");
+    }
+    catch(err)
+    {
+        err.message="error in updating the detail";
+        throw err;
+
+    }
     
 });
 
 
 // getting data from the database'
 
-app.get('/get',async (req,res)=>{
-    let val;
-    const [data,err]=await Mode.find({name:req.body.name});
-    if(data)
-    {
-        val=data;
-        console.log(data);
+app.get('/get_user_data',async (req,res)=>{
+    try{
+        let val;
+        const [data,err]=await Mode.find({name:req.body.name});
+        if(data)
+        {
+            val=data;
+            console.log(data);
+        }
+        else{
+            console.log(err,'error in fetching data from db');
+
+        }
+        res.status(200).send(val);
     }
-    else{
-        console.log(err,'error in fetching data from db');
+    catch(err)
+    {
+        err.message="error in getting user data";
+        throw err;
 
     }
-    res.send(val);
     
 
 });
 
 //crud operation for deleting the vaur using id of database
 
-app.get('/delete/:id',function(req,res){
-    let id=req.params.id;
-    Mode.findByIdAndDelete(id,function(err)
-    {
-        if(err)
+app.get('/delete_data/:id',function(req,res){
+    try{
+        let id=req.params.id;
+        Mode.findByIdAndDelete(id,function(err)
         {
-            console.log("error in deleting the data",err);
-            return;
-        }
-        return res.send("succesfully deleted");
-    })
+            if(err)
+            {
+                console.log("error in deleting the data",err);
+                return res.status(401).send("error in deleting the value in db");
+            }
+            return res.status(200).send("succesfully deleted");
+        })
+    }
+    catch(err)
+    {
+        err.message="error in deleting the data";
+        throw err;
+    }
 })
-
-
-
-
-
 
 
 
