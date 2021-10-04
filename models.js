@@ -11,7 +11,7 @@ const askedShema=new mongoose.Schema({
     },
     img:{
         type:String,
-        required:true
+        // required:true
     },
     Summary:{
         type:String,

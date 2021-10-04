@@ -3,6 +3,7 @@ const express=require('express');
 const db=require('./db');
 const Mode=require('./models');
 const {logger}=require('./logger');
+const multer=require('multer');
 const app=express();
 const port=process.env.PORT;
 app.use(express.json());
@@ -30,33 +31,55 @@ app.get('/',(req,res)=>{
 
 //
 //for storing the data into databse
-app.post('/put_user_detail',(req,res)=>{
-    // Mode.uploadedimage(req,res,function(err)
-    // {
-    //         if(err){
-    //             console.log("multer errir",err);
-    //         }
-    //         console.log(req.file);
-    // });
+app.post('/put_user_detail', (req,res)=>{
+    // let img_file;
     try{
-        let data= new Mode({
-            name:req.body.name,
-            img:req.body.name,
-            Summary:req.body.Summary
-            
+        Mode.uploadedimage(req,res,function(err)
+        {
+                if(err){
+                    console.log("multer errir",err);
+                }
+
+                console.log(req.file);
+                // img_file=req.file;
+                let data= new Mode({
+                    name:req.body.name,
+                    img:req.file.path,
+                    Summary:req.body.Summary
+                    
+                });
+                data.save();
+                console.log(data);
+                logger.info('data succesfully sent');
+                res.status(200).send("suxxesfully data have benn put down");
         });
-        data.save();
-        // console.log(data);
-        logger.info('data succesfully sent');
-        // res.end("data succesulfy sent");
-        res.status(200).send(JSON.stringify("data succesfully have been set into db"));
     }
     catch(err)
     {
         err.message="error in puttig detail of user";
         throw err;
-        
+
     }
+    // console.log(img_file,"image file");
+    // try{
+    //     let data= await new Mode({
+    //         name:req.body.name,
+    //         img:req.file,
+    //         Summary:req.body.Summary
+            
+    //     });
+    //     data.save();
+    //     console.log(data);
+    //     logger.info('data succesfully sent');
+    //     // res.end("data succesulfy sent");
+    //     res.status(200).send(JSON.stringify("data succesfully have been set into db"));
+    // }
+    // catch(err)
+    // {
+    //     err.message="error in puttig detail of user";
+    //     throw err;
+        
+    // }
     
 
 
